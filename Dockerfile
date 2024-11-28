@@ -1,20 +1,36 @@
-# Ultroid - UserBot
-# Copyright (C) 2021-2023 TeamUltroid
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
+FROM python:3.11
 
-FROM theteamultroid/ultroid:main
+# Set the working directory
+WORKDIR /TeamUltroid
 
-# set timezone
-ENV TZ=Asia/Kolkata
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Copy the entire context to the /app directory
+COPY . .
 
-COPY installer.sh .
+# Install virtualenv and create a virtual environment
+RUN pip3 install virtualenv
 
-RUN bash installer.sh
+# Activate the virtual environment
+SHELL ["/bin/bash", "-c"]
+RUN source venv/bin/activate
 
-# changing workdir
-WORKDIR "/root/TeamUltroid"
+# Install Python dependencies within the virtual environment
+RUN apt-get update && \
+    apt-get install -y git
 
-# start the bot.
+RUN pip3 install --upgrade pip && \
+    apt-get install -y \
+    libavformat-dev \
+    libavcodec-dev \
+    libavdevice-dev \
+    libavutil-dev \
+    libswscale-dev \
+    libswresample-dev \
+    libavfilter-dev \
+    pkg-config \
+    build-essential
+
+RUN pip3 install -U -r re*/st*/optional-requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Define the entry point
 CMD ["bash", "startup"]
