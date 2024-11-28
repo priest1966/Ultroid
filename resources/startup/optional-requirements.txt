@@ -1,6 +1,6 @@
 # Required only for Local Deploys
 # ------------------------------------------------------ #
-
+libsqlite3-dev
 git+https://github.com/ufoptg/akipy.git
 apscheduler
 aiohttp
